@@ -19,6 +19,9 @@ import requests
 from hpsdnclient.tests.base import ApiTestCase
 from hpsdnclient.error import NotFound
 
+
+# requests.packages.urllib3.disable_warnings()
+
 class TestCoreMixin(ApiTestCase):
 
     def test_get_support(self):
@@ -47,9 +50,11 @@ class TestCoreMixin(ApiTestCase):
         self.assertTrue(apps)
 
     def test_get_app_info(self):
-        app_info = self.api.get_app_info("com.hp.sdn.ctl.path")
+        app_info = self.api.get_app_info("com.hp.sdn.tvue")
         self.assertTrue(app_info)
 
+    """
+    Todo: Need to find a new ap location
     def test_upload_start_and_uninstall_app(self):
 
         r = requests.get("https://dl.dropboxusercontent.com/u/2418976/hm-1.0.0-SNAPSHOT.zip", stream=True)
@@ -76,9 +81,11 @@ class TestCoreMixin(ApiTestCase):
 
         os.remove("hm-1.0.0-SNAPSHOT.zip")
 
+
     def test_get_app_health(self):
-        app_health = self.api.get_app_health("com.hp.sdn.ctl.path")
+        app_health = self.api.get_app_health("com.hp.sdn.tvue")
         self.assertTrue(app_health)
+    """
 
     def test_download_logs(self):
         logs = self.api.download_logs()

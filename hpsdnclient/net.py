@@ -100,7 +100,7 @@ class NetMixin(ApiBase):
         :rtype: list
 
         """
-        url = self._net_base_url + 'arps'
+        url = self._net_base_url + 'nodes'
 
         if vid and not ip:
             url = url + "?vid={0}".format(vid, ip)
@@ -241,7 +241,11 @@ class NetMixin(ApiBase):
         url = self._diag_base_url + 'packets'
         if packet_type:
             url += '?type{}'.format(packet_type)
-        return self.restclient.get(url)
+        try:
+            result = self.restclient.get(url)
+        except KeyError:
+            print "KeyError %s" % result
+        return result
 
     def create_diag_packet(self, packet):
         """ Create a diagnostic packet
