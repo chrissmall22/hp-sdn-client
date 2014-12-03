@@ -19,7 +19,7 @@ from hpsdnclient.error import OpenflowProtocolError, VersionMismatch, NotFound
 import hpsdnclient.datatypes
 
 OF10_DPID = '00:00:00:00:00:00:00:03'
-
+OF13_DPID = '00:00:00:00:00:00:00:03'
 
 class TestOfMixin10(ApiTestCase):
     def setUp(self):
@@ -133,11 +133,23 @@ class TestOfMixin10(ApiTestCase):
                                             ipv4_dst="10.0.0.22",
                                             ip_proto="tcp",
                                             tcp_dst=80)
-        output6 = hpsdnclient.datatypes.Action(output=6)
-        flow = hpsdnclient.datatypes.Flow(priority=12345, idle_timeout=30,
+        # Check if OF version >= 1.1
+        dp_detail = self.api.get_datapath_detail(OF10_DPID)
+        if dp_detail.negotiated_version == "1.0.0":
+            output6 = hpsdnclient.datatypes.Action(output=6)
+            flow = hpsdnclient.datatypes.Flow(priority=12345, idle_timeout=30,
                                           match=match, actions=output6)
+        else:
+            output6 = hpsdnclient.datatypes.Instruction(apply_actions=[{"output": "CONTROLLER"}])
+            flow = hpsdnclient.datatypes.Flow(priority=12345, idle_timeout=30,
+                                          match=match, instructions=output6)
+
+        print flow
         self.api.add_flows(OF10_DPID, flow)
         self.assertTrue(self._flow_exists(flow))
+
+
+
 
     def test_delete_flow(self):
         match = hpsdnclient.datatypes.Match(eth_type="ipv4",
