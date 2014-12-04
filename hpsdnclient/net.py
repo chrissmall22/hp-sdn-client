@@ -244,7 +244,7 @@ class NetMixin(ApiBase):
         try:
             result = self.restclient.get(url)
         except KeyError:
-            print "KeyError %s" % result
+            print "KeyError"
         return result
 
     def create_diag_packet(self, packet):
